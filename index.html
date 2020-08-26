@@ -31,11 +31,11 @@
                         <td align="center" class="clickable" id="pw1" onClick="powerSelected(1);">Low</td>
                     </tr>
                     <tr>
-                        <td><img id="spin_button" src="spin_off.png" alt="Spin" onClick="startSpin();" /></td>
+                        <td><img id="spin_button" src="https://unrealistic4.github.io/spinwheelBoon/spin_off.png" alt="Spin" onClick="startSpin();" /></td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td><a href="#" onClick="resetWheel(); return false;">Reset Spin Wheel</a></td>
-                    </tr>
+                    </tr> -->
                 </table>
             </div>
 
@@ -44,7 +44,7 @@
                     <table class="table-borderless table text-center  table-sm table-responsive-sm">
                         <tbody>
                             <tr>
-                                <td  style="border: none;"><img src="arrow_down.png"></td>
+                                <td  style="border: none;"><img src="https://unrealistic4.github.io/spinwheelBoon/arrow_down.png"></td>
                             </tr>
                             <tr>
                                 <td  style="border: none;"><canvas  width="360" height="360" id="canvas" > 
@@ -59,58 +59,31 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- congratulation modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">恭喜你，“免费体验真实账户”奖已放入您的账户，快来注册领取吧！</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Congratulations!!</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    
-
-                    <form>
-                        <div class="form-group row">
-                            <!-- <label for="inputPassword" class="col-sm-2 col-form-label">Password</label> -->
-                            <div class="col-sm-12">
-                                <input class="form-control" id="" placeholder="*名">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <!-- <label for="inputPassword" class="col-sm-2 col-form-label">Password</label> -->
-                            <div class="col-sm-12">
-                                <input class="form-control" id="" placeholder="*姓">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <!-- <label for="inputPassword" class="col-sm-2 col-form-label">Password</label> -->
-                            <div class="col-sm-12">
-                                <input class="form-control" id="" placeholder="*电子邮箱">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-2">
-                                <input class="form-control" id="" placeholder="60">
-                            </div>
-                            <div class="col-sm-10">
-                                <input class="form-control" id="" placeholder="*手机号码-11位">
-                            </div>
-                        </div>
-                    </form>
-
-
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">免费登记模拟账户</button>
-                </div>
             </div>
         </div>
     </div>
-<script>
+    <script>
+            var parentlink = "";
+            window.onload = function() {
+                
+            };
+
+            window.onmessage = (event) => {
+                if (event.data) {
+                    parentlink = event.data;
+                }
+            };
+
             // Define segments including colour and text.
             // font size and test colour overridden on backrupt segments.
             var array = [];
@@ -154,7 +127,7 @@
             });
 
             // Loads the tick audio sound in to an audio object.
-            let audio = new Audio('tick.mp3');
+            let audio = new Audio('https://unrealistic4.github.io/spinwheelBoon/tick.mp3');
 
             // This function is called when the sound is to be played.
             function playSound()
@@ -200,7 +173,7 @@
                     wheelPower = powerLevel;
 
                     // Light up the spin button by changing it's source image and adding a clickable class to it.
-                    document.getElementById('spin_button').src = "spin_on.png";
+                    document.getElementById('spin_button').src = "https://unrealistic4.github.io/spinwheelBoon/spin_on.png";
                     document.getElementById('spin_button').className = "clickable";
                 }
             }
@@ -212,7 +185,7 @@
             {
                 //check whether spin button is off
                 var source =  document.getElementById('spin_button').src;
-                source = source.includes("spin_off.png");
+                source = source.includes("https://unrealistic4.github.io/spinwheelBoon/spin_off.png");
                 
                 // Ensure that spinning can't be clicked again while already running.
                 if ((wheelSpinning == false ) && (source != true)) {
@@ -294,7 +267,7 @@
                     RiggedPrize = getRandomPrize(array,winningNumber);
 
                     // Disable the spin button so can't click again while wheel is spinning.
-                    document.getElementById('spin_button').src       = "spin_off.png";
+                    document.getElementById('spin_button').src       = "https://unrealistic4.github.io/spinwheelBoon/spin_off.png";
                     document.getElementById('spin_button').className = "";
 
                     if (RiggedPrize > -1)
@@ -305,15 +278,16 @@
                         // Important thing is to set the stopAngle of the animation before stating the spin.
                         theWheel.animation.stopAngle = stopAt;
 
+                        // Begin the spin animation by calling startAnimation on the wheel object.
+                        theWheel.startAnimation();
+
+                        // Set to true so that power can't be changed and spin button re-enabled during
+                        // the current animation. The user will have to reset before spinning again.
+                        wheelSpinning = true;
+
                     }else{
                         alert("Random Prize doesn't selected!")
                     }
-                    // Begin the spin animation by calling startAnimation on the wheel object.
-                    theWheel.startAnimation();
-
-                    // Set to true so that power can't be changed and spin button re-enabled during
-                    // the current animation. The user will have to reset before spinning again.
-                    wheelSpinning = true;
 
                 }else if((wheelSpinning == true ) )
                 {
@@ -351,9 +325,11 @@
                     alert('Oh no, you have gone BANKRUPT!');
                 } else {
                     //alert("You have won " + indicatedSegment.text);
-                    document.getElementById("exampleModalLabel").innerHTML = "恭喜你赢得了"+indicatedSegment.text+"元，“免费体验真实账户”奖已放入您的账户，快来注册领取吧！";
+                    document.getElementById("exampleModalLabel").innerHTML = "Congratulations, You have won " + indicatedSegment.text + "!!!";
                     $("#exampleModal").modal();
                 }
+
+                window.parent.postMessage(indicatedSegment.text, parentlink);
             }
 
             function probability(n){
@@ -391,6 +367,10 @@
                 }
 
                 return randomInt;
+            }
+
+            function verifySpinCode(){
+                document.getElementById('spincode').value;
             }
         </script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

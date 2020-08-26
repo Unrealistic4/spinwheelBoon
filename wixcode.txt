@@ -1,0 +1,85 @@
+// For full API documentation, including code examples, visit https://wix.to/94BuAAs
+import wixLocation from 'wix-location';
+import wixData from 'wix-data';
+
+let baseUrl = wixLocation.url;
+let options = {
+  "suppressAuth": true,
+  "suppressHooks": true
+};
+var couponID = "";
+var prize = "";
+var spincode = "";
+
+$w.onReady(function () {
+	
+  $w("#txtErrMsg").text ="";
+  $w("#txtSuccMsg").text = "";
+  $w("#htmlspin").hide();
+  
+
+	// when a message is received from the HTML element
+  $w("#htmlspin").onMessage( (event) => {
+    prize = event.data;
+
+    if (prize != "" && couponID != "" && spincode != "")
+    {
+      let toUpdate = {
+        "_id":          couponID,
+        "spincode":     spincode,
+        "prize":        prize
+      };
+
+      wixData.update("spincode", toUpdate, options)
+      .then( (results) => {
+        let item = results;
+        $w("#txtSuccMsg").text = "Prize stored successfully.";
+      } )
+      .catch( (err) => {
+        let errorMsg = err;
+        $w("#txtErrMsg").text = "Error storing prize.";
+      } );
+    }
+
+  } );
+});
+
+
+export function btnSpin_click(event) {
+
+  $w("#txtErrMsg").text = "";
+
+	if( $w("#txtSpinCode").value == "" )
+  {$w("#txtErrMsg").text = "Spin code cannot be empty.";return;}
+
+  wixData.query("spincode")
+  .eq("spincode", $w("#txtSpinCode").value)
+  .find()
+  .then( (results) => {
+    if(results.items.length === 1) {
+      let firstItem = results.items[0]; //see item below
+      if (firstItem.prize == "" || firstItem.prize == undefined)
+      {
+        couponID = firstItem._id;
+        spincode = firstItem.spincode;
+
+        $w("#htmlspin").show();
+
+        baseUrl = "https://editor.wix.com/html/editor/web/renderer/edit/4419b05e-4c1c-47c8-a83d-694c57ee5243?metaSiteId=17399f09-97a8-4b36-bd5c-824523977927&editorSessionId=5f2a2dca-09b9-46ef-ac1e-72a253a4177d&referralInfo=my-account";
+        $w("#htmlspin").postMessage(baseUrl);
+        $w("#btnSpin").disable();
+        $w("#txtSpinCode").disable();
+      }else{
+        $w("#txtErrMsg").text = "This code has been used.";
+      }
+
+    } else {
+      $w("#txtErrMsg").text = "Code not found!";
+    }
+  } )
+  .catch( (err) => {
+    let errorMsg = err;
+    $w("#txtErrMsg").text = "Error checking coupon code.";
+  } );
+
+}
