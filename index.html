@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Spin Wheel</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="main.css" type="text/css" />
+    <script type="text/javascript" src="./Winwheel.min.js"></script>
+    <script src="./TweenMax.min.js"></script>
+</head>
+<body>
+    <br/>
+    <br/>
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-4 mt-5">
+                <table class="table table-dark table-hover text-center">
+                    <thead>
+                        <tr>
+                            <td align="center">Power</td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td width="78" class="clickable" align="center" id="pw3" onClick="powerSelected(3);">High</td>
+                    </tr>
+                    <tr>
+                        <td align="center" class="clickable" id="pw2" onClick="powerSelected(2);">Med</td>
+                    </tr>
+                    <tr>
+                        <td align="center" class="clickable" id="pw1" onClick="powerSelected(1);">Low</td>
+                    </tr>
+                    <tr>
+                        <td><img id="spin_button" src="spin_off.png" alt="Spin" onClick="startSpin();" /></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#" onClick="resetWheel(); return false;">Reset Spin Wheel</a></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-sm-8">
+                <div>
+                    <table class="table-borderless table text-center  table-sm table-responsive-sm">
+                        <tbody>
+                            <tr>
+                                <td  style="border: none;"><img src="arrow_down.png"></td>
+                            </tr>
+                            <tr>
+                                <td  style="border: none;"><canvas  width="360" height="360" id="canvas" > 
+                                    <p style="{color: white}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
+                                </canvas></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">恭喜你，“免费体验真实账户”奖已放入您的账户，快来注册领取吧！</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    
+
+                    <form>
+                        <div class="form-group row">
+                            <!-- <label for="inputPassword" class="col-sm-2 col-form-label">Password</label> -->
+                            <div class="col-sm-12">
+                                <input class="form-control" id="" placeholder="*名">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <!-- <label for="inputPassword" class="col-sm-2 col-form-label">Password</label> -->
+                            <div class="col-sm-12">
+                                <input class="form-control" id="" placeholder="*姓">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <!-- <label for="inputPassword" class="col-sm-2 col-form-label">Password</label> -->
+                            <div class="col-sm-12">
+                                <input class="form-control" id="" placeholder="*电子邮箱">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-2">
+                                <input class="form-control" id="" placeholder="60">
+                            </div>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="" placeholder="*手机号码-11位">
+                            </div>
+                        </div>
+                    </form>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">免费登记模拟账户</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+            // Define segments including colour and text.
+            // font size and test colour overridden on backrupt segments.
+            var array = [];
+            array.push(
+                {'fillStyle' : '#ffeb3b', 'text' : '350'},
+                {'fillStyle' : '#e91e63', 'text' : '210'},
+                {'fillStyle' : '#4caf50', 'text' : '150'},
+                {'fillStyle' : '#3f51b5', 'text' : '10'},
+                {'fillStyle' : '#ffeb3b', 'text' : '250'},
+                {'fillStyle' : '#000000', 'text' : 'BANKRUPT', 'textFontSize' : 16, 'textFillStyle' : '#ffffff'},
+                {'fillStyle' : '#e91e63', 'text' : '310'},
+                {'fillStyle' : '#4caf50', 'text' : '50'},
+                {'fillStyle' : '#3f51b5', 'text' : '110'}
+                );
+
+            // Create new wheel object specifying the parameters at creation time.
+            let theWheel = new Winwheel({
+                'outerRadius'     : 178,        // Set outer radius so wheel fits inside the background.
+                'innerRadius'     : 75,         // Make wheel hollow so segments don't go all way to center.
+                'textFontSize'    : 24,         // Set default font size for the segments.
+                'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
+                'textAlignment'   : 'outer',    // Align text to outside of wheel.
+                'textFillStyle'   : 'white',    // color of text
+                'numSegments'     : array.length,          // Specify number of segments.
+                'segments'        : array,            // Define segments including colour and text.
+                'animation' :           // Specify the animation to use.
+                {
+                    'type'     : 'spinToStop',
+                    'duration' : 10,    // Duration in seconds.
+                    'spins'    : 3,     // Default number of complete spins.
+                    'callbackFinished' : alertPrize,
+                    'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
+                    'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound, the other option is 'segment'.
+                },
+                'pins' :				// Turn pins on.
+                {
+                    'number'     : 24,
+                    'fillStyle'  : 'silver',
+                    'outerRadius': 4,
+                }
+            });
+
+            // Loads the tick audio sound in to an audio object.
+            let audio = new Audio('tick.mp3');
+
+            // This function is called when the sound is to be played.
+            function playSound()
+            {
+                // Stop and rewind the sound if it already happens to be playing.
+                audio.pause();
+                audio.currentTime = 0;
+
+                // Play the sound.
+                audio.play();
+            }
+
+            // Vars used by the code in this page to do power controls.
+            let wheelPower    = 0;
+            let wheelSpinning = false;
+
+            // -------------------------------------------------------
+            // Function to handle the onClick on the power buttons.
+            // -------------------------------------------------------
+            function powerSelected(powerLevel)
+            {
+                // Ensure that power can't be changed while wheel is spinning.
+                if (wheelSpinning == false) {
+                    // Reset all to grey incase this is not the first time the user has selected the power.
+                    document.getElementById('pw1').className = "clickable";
+                    document.getElementById('pw2').className = "clickable";
+                    document.getElementById('pw3').className = "clickable";
+
+                    // Now light up all cells below-and-including the one selected by changing the class.
+                    if (powerLevel >= 1) {
+                        document.getElementById('pw1').className = "pw1 clickable";
+                    }
+
+                    if (powerLevel >= 2) {
+                        document.getElementById('pw2').className = "pw2 clickable";
+                    }
+
+                    if (powerLevel >= 3) {
+                        document.getElementById('pw3').className = "pw3 clickable";
+                    }
+
+                    // Set wheelPower var used when spin button is clicked.
+                    wheelPower = powerLevel;
+
+                    // Light up the spin button by changing it's source image and adding a clickable class to it.
+                    document.getElementById('spin_button').src = "spin_on.png";
+                    document.getElementById('spin_button').className = "clickable";
+                }
+            }
+
+            // -------------------------------------------------------
+            // Click handler for spin button.
+            // -------------------------------------------------------
+            function startSpin()
+            {
+                //check whether spin button is off
+                var source =  document.getElementById('spin_button').src;
+                source = source.includes("spin_off.png");
+                
+                // Ensure that spinning can't be clicked again while already running.
+                if ((wheelSpinning == false ) && (source != true)) {
+                    // Based on the power level selected adjust the number of spins for the wheel, the more times is has
+                    // to rotate with the duration of the animation the quicker the wheel spins.
+                    if (wheelPower == 1) {
+                        theWheel.animation.spins = 3;
+                    } else if (wheelPower == 2) {
+                        theWheel.animation.spins = 6;
+                    } else if (wheelPower == 3) {
+                        theWheel.animation.spins = 10;
+                    }
+
+                    var RiggedPrize = "";
+                    var winningNumber = [];
+                    
+                    if(probability(0.05) == true) { // probability of 5%
+                        winningNumber.push(350);
+                    }
+                    else if(probability(0.10) == true){ // probability of 10%
+                        winningNumber.push(50);
+                        winningNumber.push(210);
+                    }
+                    // else if(probability(0.15) == true){ // probability of 15%
+
+                    // }
+                    // else if(probability(0.20) == true){ // probability of 20%
+
+                    // }
+                    // else if(probability(0.25) == true){ // probability of 25%
+
+                    // }
+                    // else if(probability(0.30) == true){ // probability of 30%
+
+                    // }
+                    // else if(probability(0.35) == true){ // probability of 35%
+
+                    // }
+                    // else if(probability(0.40) == true){ // probability of 40%
+
+                    // }
+                    // else if(probability(0.45) == true){ // probability of 45%
+
+                    // }
+                    // else if(probability(0.50) == true){ // probability of 50%
+
+                    // }
+                    // else if(probability(0.55) == true){ // probability of 55%
+
+                    // }
+                    // else if(probability(0.60) == true){ // probability of 60%
+
+                    // }
+                    // else if(probability(0.65) == true){ // probability of 65%
+
+                    // }
+                    // else if(probability(0.70) == true){ // probability of 70%
+
+                    // }
+                    // else if(probability(0.75) == true){ // probability of 75%
+
+                    // }
+                    else if(probability(0.80) == true){ // probability of 80%
+                        winningNumber.push(10);
+                    }
+                    // else if(probability(0.85) == true){ // probability of 85%
+
+                    // }
+                    // else if(probability(0.90) == true){ // probability of 90%
+
+                    // }
+                    // else if(probability(0.95) == true){ // probability of 95%
+
+                    // }
+                    else if(probability(1) == true){ // probability of 80%
+                        winningNumber.push(10);
+                    }
+
+                    RiggedPrize = getRandomPrize(array,winningNumber);
+
+                    // Disable the spin button so can't click again while wheel is spinning.
+                    document.getElementById('spin_button').src       = "spin_off.png";
+                    document.getElementById('spin_button').className = "";
+
+                    if (RiggedPrize > -1)
+                    {
+                        // Get random angle inside specified segment of the wheel.
+                        let stopAt = theWheel.getRandomForSegment(RiggedPrize+1);
+
+                        // Important thing is to set the stopAngle of the animation before stating the spin.
+                        theWheel.animation.stopAngle = stopAt;
+
+                    }else{
+                        alert("Random Prize doesn't selected!")
+                    }
+                    // Begin the spin animation by calling startAnimation on the wheel object.
+                    theWheel.startAnimation();
+
+                    // Set to true so that power can't be changed and spin button re-enabled during
+                    // the current animation. The user will have to reset before spinning again.
+                    wheelSpinning = true;
+
+                }else if((wheelSpinning == true ) )
+                {
+                    //when spin wheel has run one time
+                    //alert("Please click 'Reset' to play again.");
+                }else{
+                    alert("Please select the spin power level.");
+                }
+            }
+
+            // -------------------------------------------------------
+            // Function for reset button.
+            // -------------------------------------------------------
+            function resetWheel()
+            {
+                theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+                theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+                theWheel.draw();                // Call draw to render changes to the wheel.
+
+                document.getElementById('pw1').className = "clickable";  // Remove all colours from the power level indicators.
+                document.getElementById('pw2').className = "clickable";
+                document.getElementById('pw3').className = "clickable";
+
+                wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
+            }
+
+            // -------------------------------------------------------
+            // Called when the spin animation has finished by the callback feature of the wheel because I specified callback in the parameters.
+            // -------------------------------------------------------
+            function alertPrize(indicatedSegment)
+            {
+                // Just alert to the user what happened.
+                // In a real project probably want to do something more interesting than this with the result.
+                if (indicatedSegment.text == 'BANKRUPT') {
+                    alert('Oh no, you have gone BANKRUPT!');
+                } else {
+                    //alert("You have won " + indicatedSegment.text);
+                    document.getElementById("exampleModalLabel").innerHTML = "恭喜你赢得了"+indicatedSegment.text+"元，“免费体验真实账户”奖已放入您的账户，快来注册领取吧！";
+                    $("#exampleModal").modal();
+                }
+            }
+
+            function probability(n){
+                //count probability
+                if(Math.random() < n){
+                    return true;    
+                }else{
+                    return false;    
+                }
+                
+            }
+
+            function getRandomPrize(pArray,pGroupNumber){
+                //we pass the array and check whether the number match here
+                var arrayNum = [];
+                var randomInt;
+
+                for(var i=0;i<pArray.length;i++)
+                {
+                    //loop for every data in spinner
+                    for(var b=0;b<pGroupNumber.length;b++)
+                    {
+                        //loop for every number wish to get prize
+                        if(pArray[i].text==pGroupNumber[b])
+                        {
+                            arrayNum.push({'position':i});
+                        }
+                    }
+                }
+
+                if(arrayNum.length>0){
+                    randomInt = arrayNum[Math.floor(Math.random() * arrayNum.length)].position;
+                }else{
+                    randomInt=-1;
+                }
+
+                return randomInt;
+            }
+        </script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </body>
+    </html>
