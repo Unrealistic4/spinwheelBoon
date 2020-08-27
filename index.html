@@ -33,9 +33,12 @@
                     <tr>
                         <td><img id="spin_button" src="https://unrealistic4.github.io/spinwheelBoon/spin_off.png" alt="Spin" onClick="startSpin();" /></td>
                     </tr>
-                    <!-- <tr>
+                    <tr>
                         <td><a href="#" onClick="resetWheel(); return false;">Reset Spin Wheel</a></td>
-                    </tr> -->
+                    </tr>
+                    <tr>
+                        <td><p id="test"></p></td>
+                    </tr>
                 </table>
             </div>
 
@@ -88,15 +91,15 @@
             // font size and test colour overridden on backrupt segments.
             var array = [];
             array.push(
-                {'fillStyle' : '#ffeb3b', 'text' : '350'},
-                {'fillStyle' : '#e91e63', 'text' : '210'},
-                {'fillStyle' : '#4caf50', 'text' : '150'},
-                {'fillStyle' : '#3f51b5', 'text' : '10'},
-                {'fillStyle' : '#ffeb3b', 'text' : '250'},
-                {'fillStyle' : '#000000', 'text' : 'BANKRUPT', 'textFontSize' : 16, 'textFillStyle' : '#ffffff'},
-                {'fillStyle' : '#e91e63', 'text' : '310'},
-                {'fillStyle' : '#4caf50', 'text' : '50'},
-                {'fillStyle' : '#3f51b5', 'text' : '110'}
+                {'fillStyle' : '#ffeb3b', 'text' : '350' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '10'},
+                {'fillStyle' : '#e91e63', 'text' : '210' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '20'},
+                {'fillStyle' : '#4caf50', 'text' : '150' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '30'},
+                {'fillStyle' : '#3f51b5', 'text' : '10' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '80'},
+                {'fillStyle' : '#ffeb3b', 'text' : '250' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '15'},
+                {'fillStyle' : '#000000', 'text' : 'BANKRUPT', 'textFontSize' : 16, 'textFillStyle' : '#ffffff', 'chance' : '1'},
+                {'fillStyle' : '#e91e63', 'text' : '310' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '8'},
+                {'fillStyle' : '#4caf50', 'text' : '50' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '70'},
+                {'fillStyle' : '#3f51b5', 'text' : '110' , 'textFontSize' : 24, 'textFillStyle' : '#4caf50', 'chance' : '60'}
                 );
 
             // Create new wheel object specifying the parameters at creation time.
@@ -112,7 +115,7 @@
                 'animation' :           // Specify the animation to use.
                 {
                     'type'     : 'spinToStop',
-                    'duration' : 10,    // Duration in seconds.
+                    'duration' : 1,    // Duration in seconds.
                     'spins'    : 3,     // Default number of complete spins.
                     'callbackFinished' : alertPrize,
                     'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
@@ -199,73 +202,36 @@
                         theWheel.animation.spins = 10;
                     }
 
-                    var RiggedPrize = "";
-                    var winningNumber = [];
+                    let RiggedPrize = getRiggedPrize(array);
+
+                    var testingNum = "";
+                    var testArray = [];
+                    for(var t=0;t<1000;t++)
+                    {
+                        testingNum = getRiggedPrize(array);
+                        if(testArray.length == 0){testArray.push({"data":testingNum,"count":1});continue;}
+                        for(var ta=0;ta<testArray.length;ta++)
+                        {
+                            if(testArray[ta].data == testingNum)
+                            {
+                                testArray[ta].count += 1;
+                                break;
+                            }else if(ta == testArray.length-1)
+                            {
+                                testArray.push({"data":testingNum,"count":1});
+                                break;
+                            }
+                        }
+                    }
+
+                    testingNum ="";
+                    for(var t=0;t<testArray.length;t++)
+                    {
+                        testingNum += "Segment : " + (testArray[t].data + 1) + ", Count : " + testArray[t].count + "<br/>"
+                    }
+
+                    document.getElementById('test').innerHTML        = testingNum;
                     
-                    if(probability(0.05) == true) { // probability of 5%
-                        winningNumber.push(350);
-                    }
-                    else if(probability(0.10) == true){ // probability of 10%
-                        winningNumber.push(50);
-                        winningNumber.push(210);
-                    }
-                    // else if(probability(0.15) == true){ // probability of 15%
-
-                    // }
-                    // else if(probability(0.20) == true){ // probability of 20%
-
-                    // }
-                    // else if(probability(0.25) == true){ // probability of 25%
-
-                    // }
-                    // else if(probability(0.30) == true){ // probability of 30%
-
-                    // }
-                    // else if(probability(0.35) == true){ // probability of 35%
-
-                    // }
-                    // else if(probability(0.40) == true){ // probability of 40%
-
-                    // }
-                    // else if(probability(0.45) == true){ // probability of 45%
-
-                    // }
-                    // else if(probability(0.50) == true){ // probability of 50%
-
-                    // }
-                    // else if(probability(0.55) == true){ // probability of 55%
-
-                    // }
-                    // else if(probability(0.60) == true){ // probability of 60%
-
-                    // }
-                    // else if(probability(0.65) == true){ // probability of 65%
-
-                    // }
-                    // else if(probability(0.70) == true){ // probability of 70%
-
-                    // }
-                    // else if(probability(0.75) == true){ // probability of 75%
-
-                    // }
-                    else if(probability(0.80) == true){ // probability of 80%
-                        winningNumber.push(10);
-                    }
-                    // else if(probability(0.85) == true){ // probability of 85%
-
-                    // }
-                    // else if(probability(0.90) == true){ // probability of 90%
-
-                    // }
-                    // else if(probability(0.95) == true){ // probability of 95%
-
-                    // }
-                    else if(probability(1) == true){ // probability of 100%
-                        winningNumber.push(10);
-                    }
-
-                    RiggedPrize = getRandomPrize(array,winningNumber);
-
                     // Disable the spin button so can't click again while wheel is spinning.
                     document.getElementById('spin_button').src       = "https://unrealistic4.github.io/spinwheelBoon/spin_off.png";
                     document.getElementById('spin_button').className = "";
@@ -332,45 +298,27 @@
                 window.parent.postMessage(indicatedSegment.text, parentlink);
             }
 
-            function probability(n){
-                //count probability
-                if(Math.random() < n){
-                    return true;    
-                }else{
-                    return false;    
-                }
-                
-            }
-
-            function getRandomPrize(pArray,pGroupNumber){
-                //we pass the array and check whether the number match here
-                var arrayNum = [];
-                var randomInt;
-
-                for(var i=0;i<pArray.length;i++)
+            function getRiggedPrize(pArray){
+                var temparray = [];
+                for(var i = 0;i<pArray.length;i++)
                 {
-                    //loop for every data in spinner
-                    for(var b=0;b<pGroupNumber.length;b++)
+                    for(var j = 0;j<pArray[i].chance;j++)
                     {
-                        //loop for every number wish to get prize
-                        if(pArray[i].text==pGroupNumber[b])
-                        {
-                            arrayNum.push({'position':i});
-                        }
+                        temparray.push(pArray[i].text);
                     }
                 }
 
-                if(arrayNum.length>0){
-                    randomInt = arrayNum[Math.floor(Math.random() * arrayNum.length)].position;
-                }else{
-                    randomInt=-1;
+                let randomNum = temparray[Math.floor(Math.random() * temparray.length)];
+
+                for(var i = 0;i<pArray.length;i++)
+                {
+                    if(pArray[i].text == randomNum)
+                    {
+                        return i;
+                    }else if(i == pArray.length-1){
+                        return Math.floor(Math.random() * pArray.length);
+                    }
                 }
-
-                return randomInt;
-            }
-
-            function verifySpinCode(){
-                document.getElementById('spincode').value;
             }
         </script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
