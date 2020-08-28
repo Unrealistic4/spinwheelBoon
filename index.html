@@ -78,12 +78,12 @@
     <script>
             var parentlink = "";
             window.onload = function() {
-                
+                //do nothing
             };
 
             window.onmessage = (event) => {
                 if (event.data) {
-                    parentlink = event.data;
+                    parentlink = event.data; //get parent url from wix
                 }
             };
 
@@ -91,16 +91,16 @@
             // font size and test colour overridden on backrupt segments.
             var array = [];
             array.push(
-                {'fillStyle' : '#ffeb3b', 'text' : '350' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '10'},
-                {'fillStyle' : '#e91e63', 'text' : '210' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '20'},
-                {'fillStyle' : '#4caf50', 'text' : '150' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '30'},
-                {'fillStyle' : '#3f51b5', 'text' : '10' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '80'},
-                {'fillStyle' : '#ffeb3b', 'text' : '250' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '15'},
-                {'fillStyle' : '#000000', 'text' : 'BANKRUPT', 'textFontSize' : 16, 'textFillStyle' : '#ffffff', 'chance' : '1'},
-                {'fillStyle' : '#e91e63', 'text' : '310' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '8'},
-                {'fillStyle' : '#4caf50', 'text' : '50' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '70'},
-                {'fillStyle' : '#3f51b5', 'text' : '110' , 'textFontSize' : 24, 'textFillStyle' : '#4caf50', 'chance' : '60'}
-                );
+                {'fillStyle' : '#ffeb3b', 'text' : '350' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '6'},
+                {'fillStyle' : '#e91e63', 'text' : '210' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '1'},
+                {'fillStyle' : '#4caf50', 'text' : '150' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '2'},
+                {'fillStyle' : '#3f51b5', 'text' : '10' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '6'},
+                {'fillStyle' : '#ffeb3b', 'text' : '250' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '1'},
+                {'fillStyle' : '#000000', 'text' : 'BANKRUPT', 'textFontSize' : 16, 'textFillStyle' : '#ffffff', 'chance' : '5'},
+                {'fillStyle' : '#e91e63', 'text' : '310' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '1'},
+                {'fillStyle' : '#4caf50', 'text' : '50' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '7'},
+                {'fillStyle' : '#3f51b5', 'text' : '110' , 'textFontSize' : 24, 'textFillStyle' : '#4caf50', 'chance' : '6'}
+            );
 
             // Create new wheel object specifying the parameters at creation time.
             let theWheel = new Winwheel({
@@ -115,7 +115,7 @@
                 'animation' :           // Specify the animation to use.
                 {
                     'type'     : 'spinToStop',
-                    'duration' : 1,    // Duration in seconds.
+                    'duration' : 10,    // Duration in seconds.
                     'spins'    : 3,     // Default number of complete spins.
                     'callbackFinished' : alertPrize,
                     'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
@@ -202,11 +202,13 @@
                         theWheel.animation.spins = 10;
                     }
 
+                    //get random number based on array item
                     let RiggedPrize = getRiggedPrize(array);
 
+                    //for self testing on random num probability
                     var testingNum = "";
                     var testArray = [];
-                    for(var t=0;t<1000;t++)
+                    for(var t=0;t<100;t++)
                     {
                         testingNum = getRiggedPrize(array);
                         if(testArray.length == 0){testArray.push({"data":testingNum,"count":1});continue;}
@@ -227,8 +229,9 @@
                     testingNum ="";
                     for(var t=0;t<testArray.length;t++)
                     {
-                        testingNum += "Segment : " + (testArray[t].data + 1) + ", Count : " + testArray[t].count + "<br/>"
+                        testingNum += "Data : " + theWheel.segments[testArray[t].data + 1].text + ", Chance : " + theWheel.segments[testArray[t].data + 1].chance + "%, Count : " + testArray[t].count + "<br/>"
                     }
+                    //end for self testing on random num probability
 
                     document.getElementById('test').innerHTML        = testingNum;
                     
@@ -292,30 +295,38 @@
                 } else {
                     //alert("You have won " + indicatedSegment.text);
                     document.getElementById("exampleModalLabel").innerHTML = "Congratulations, You have won " + indicatedSegment.text + "!!!";
+                    //call the modal for congratulation
                     $("#exampleModal").modal();
                 }
-
+                //send message to parent site (wix.com)
                 window.parent.postMessage(indicatedSegment.text, parentlink);
             }
 
             function getRiggedPrize(pArray){
                 var temparray = [];
+                
                 for(var i = 0;i<pArray.length;i++)
                 {
+                    //loop for each array (item in spin wheel)
+                    
                     for(var j = 0;j<pArray[i].chance;j++)
                     {
+                        //push into temparray based on the time of chance
                         temparray.push(pArray[i].text);
                     }
                 }
 
+                //randomized the number in array
                 let randomNum = temparray[Math.floor(Math.random() * temparray.length)];
 
                 for(var i = 0;i<pArray.length;i++)
                 {
                     if(pArray[i].text == randomNum)
                     {
+                        //return randomNum segment
                         return i;
                     }else if(i == pArray.length-1){
+                        //if bug happen return random number
                         return Math.floor(Math.random() * pArray.length);
                     }
                 }
