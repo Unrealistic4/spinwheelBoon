@@ -91,16 +91,19 @@
             // font size and test colour overridden on backrupt segments.
             var array = [];
             array.push(
-                {'fillStyle' : '#ffeb3b', 'text' : '350' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '6'},
-                {'fillStyle' : '#e91e63', 'text' : '210' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '1'},
-                {'fillStyle' : '#4caf50', 'text' : '150' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '2'},
-                {'fillStyle' : '#3f51b5', 'text' : '10' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '6'},
-                {'fillStyle' : '#ffeb3b', 'text' : '250' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '1'},
-                {'fillStyle' : '#000000', 'text' : 'BANKRUPT', 'textFontSize' : 16, 'textFillStyle' : '#ffffff', 'chance' : '5'},
-                {'fillStyle' : '#e91e63', 'text' : '310' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '1'},
-                {'fillStyle' : '#4caf50', 'text' : '50' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '7'},
-                {'fillStyle' : '#3f51b5', 'text' : '110' , 'textFontSize' : 24, 'textFillStyle' : '#4caf50', 'chance' : '6'}
+                {'fillStyle' : '#ffeb3b', 'text' : '350' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '10'},
+                {'fillStyle' : '#e91e63', 'text' : '210' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '90'},
+                // {'fillStyle' : '#4caf50', 'text' : '150' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '70'},
+                // {'fillStyle' : '#3f51b5', 'text' : '10' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '6'},
+                // {'fillStyle' : '#ffeb3b', 'text' : '250' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '1'},
+                // {'fillStyle' : '#000000', 'text' : 'BANKRUPT', 'textFontSize' : 16, 'textFillStyle' : '#ffffff', 'chance' : '5'},
+                // {'fillStyle' : '#e91e63', 'text' : '310' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '1'},
+                // {'fillStyle' : '#4caf50', 'text' : '50' , 'textFontSize' : 24, 'textFillStyle' : 'white', 'chance' : '7'},
+                // {'fillStyle' : '#3f51b5', 'text' : '110' , 'textFontSize' : 24, 'textFillStyle' : '#4caf50', 'chance' : '600'}
             );
+
+            //testing probability
+            let testingLoop = 1000;
 
             // Create new wheel object specifying the parameters at creation time.
             let theWheel = new Winwheel({
@@ -208,7 +211,7 @@
                     //for self testing on random num probability
                     var testingNum = "";
                     var testArray = [];
-                    for(var t=0;t<100;t++)
+                    for(var t=0;t<testingLoop;t++)
                     {
                         testingNum = getRiggedPrize(array);
                         if(testArray.length == 0){testArray.push({"data":testingNum,"count":1});continue;}
@@ -233,7 +236,8 @@
                     }
                     //end for self testing on random num probability
 
-                    document.getElementById('test').innerHTML        = testingNum;
+                    if(testArray.length>0)
+                    {document.getElementById('test').innerHTML        = testingNum;}
                     
                     // Disable the spin button so can't click again while wheel is spinning.
                     document.getElementById('spin_button').src       = "https://unrealistic4.github.io/spinwheelBoon/spin_off.png";
